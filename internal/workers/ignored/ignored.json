@@ -1,0 +1,9 @@
+{
+    "ignored_controllers": [
+        "1912AC8630C56A0"
+    ],
+    "ignored_devices": [
+        "device1",
+        "device2"
+    ]
+}
