@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/johandrevandeventer/kafkaclient/payload"
 	"github.com/johandrevandeventer/mqtt-worker/internal/workers"
@@ -70,7 +71,7 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 		return MessageInfo, fmt.Errorf("error parsing timestamp: %w", err)
 	}
 
-	fmt.Println("Timestamp:", timestamp)
+	timestamp = timestamp.Add(-2 * time.Hour)
 
 	var data map[string]any
 	err = json.Unmarshal(msg.Message, &data)
@@ -91,7 +92,7 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 	case DeviceTypePowermeter:
 		logger.Debug(fmt.Sprintf("%s :: %s", device.Controller, device.DeviceType))
 
-		rawData, processedData, err := powermeter.Decoder(data)
+		rawData, processedData, err = powermeter.Decoder(data)
 		if err != nil {
 			return MessageInfo, fmt.Errorf("error decoding genset data: %w", err)
 		}
