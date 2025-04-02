@@ -181,5 +181,5 @@ func GetIgnoredDevices() ([]string, error) {
 }
 
 func IsEmpty(s types.DataStruct) bool {
-	return s.State == "" && s.CustomerID == uuid.Nil && s.CustomerName == "" && s.SiteID == uuid.Nil && s.SiteName == "" && s.Gateway == "" && s.Controller == "" && s.DeviceType == "" && s.ControllerIdentifier == "" && s.DeviceName == "" && s.DeviceIdentifier == "" && s.Data == nil && s.Timestamp.IsZero()
+	return s.State == "" && s.CustomerID == uuid.Nil && s.CustomerName == "" && s.SiteID == uuid.Nil && s.SiteName == "" && s.Controller == "" && s.DeviceType == "" && s.ControllerIdentifier == "" && s.DeviceName == "" && s.DeviceIdentifier == "" && s.Data == nil && s.Timestamp.IsZero()
 }

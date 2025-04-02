@@ -22,7 +22,6 @@ type DataStruct struct {
 	CustomerName         string
 	SiteID               uuid.UUID
 	SiteName             string
-	Gateway              string
 	Controller           string
 	DeviceType           string
 	ControllerIdentifier string
@@ -36,8 +35,21 @@ type DataStruct struct {
 type MessageInfo struct {
 	MessageID string `json:"message_id"` // Unique identifier for the message
 
+	// Optional controller information
+	Controller *Controller `json:"controller,omitempty"`
+
 	// Device data (either single device or multiple under a controller)
 	Devices []Device `json:"devices"`
+}
+
+// Controller information
+type Controller struct {
+	ID       string            `json:"id"`
+	Name     string            `json:"name,omitempty"`
+	Location string            `json:"location,omitempty"`
+	Firmware string            `json:"firmware,omitempty"`
+	Metadata map[string]string `json:"metadata,omitempty"`
+	LastSeen time.Time         `json:"last_seen,omitempty"`
 }
 
 // Device information
@@ -46,7 +58,6 @@ type Device struct {
 	CustomerName         string
 	SiteID               uuid.UUID
 	SiteName             string
-	Gateway              string
 	Controller           string
 	DeviceType           string
 	ControllerIdentifier string
