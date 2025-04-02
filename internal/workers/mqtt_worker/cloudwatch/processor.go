@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"slices"
 	"strings"
-	"time"
 
 	"github.com/johandrevandeventer/kafkaclient/payload"
 	"github.com/johandrevandeventer/mqtt-worker/internal/workers"
@@ -66,7 +65,7 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 	deviceTypeLower := strings.ToLower(deviceType)
 	t := cloudWatchInfo.Timestamp
 
-	timestamp, err := time.Parse("2006-01-02T15:04:05.000", t)
+	timestamp, err := workers.ParseTimeFlexible(t)
 	if err != nil {
 		return MessageInfo, fmt.Errorf("error parsing timestamp: %w", err)
 	}

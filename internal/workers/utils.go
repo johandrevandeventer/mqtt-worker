@@ -180,6 +180,24 @@ func GetIgnoredDevices() ([]string, error) {
 	return ignoredControllersAndDevices.IgnoredDevices, nil
 }
 
+// Helper function to check if a DataStruct is empty
 func IsEmpty(s types.DataStruct) bool {
 	return s.State == "" && s.CustomerID == uuid.Nil && s.CustomerName == "" && s.SiteID == uuid.Nil && s.SiteName == "" && s.Controller == "" && s.DeviceType == "" && s.ControllerIdentifier == "" && s.DeviceName == "" && s.DeviceIdentifier == "" && s.Data == nil && s.Timestamp.IsZero()
+}
+
+// ParseTimeFlexible parses a timestamp string with flexible formats
+func ParseTimeFlexible(timestamp string) (time.Time, error) {
+	layouts := []string{
+		"2006-01-02T15:04:05.000", // 3 decimal places
+		"2006-01-02T15:04:05.00",  // 2 decimal places
+		"2006-01-02T15:04:05",     // No fractional seconds
+	}
+
+	for _, layout := range layouts {
+		parsedTime, err := time.Parse(layout, timestamp)
+		if err == nil {
+			return parsedTime, nil
+		}
+	}
+	return time.Time{}, fmt.Errorf("could not parse time: %s", timestamp)
 }
