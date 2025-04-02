@@ -23,4 +23,4 @@ go.work.sum
 
 # Runtime files
 /.runtime
-dse-worker
+mqtt-worker
