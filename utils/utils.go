@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/johandrevandeventer/mqtt-worker/internal/flags"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v2"
@@ -178,4 +179,9 @@ func DecodeMapToStruct(payload interface{}, target interface{}) error {
 	}
 
 	return nil
+}
+
+// GenerateUUID generates a new UUID
+func GenerateUUID() uuid.UUID {
+	return uuid.New()
 }
