@@ -68,7 +68,7 @@ func FileExists(filePath string) bool {
 }
 
 // LoadYAMLFile loads the specified file path and unmarshals it into the given data structure.
-func LoadYAMLFile(filePath string, target interface{}) error {
+func LoadYAMLFile(filePath string, target any) error {
 	// Check if the file exists
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return fmt.Errorf("file does not exist: %s", filePath)
@@ -91,7 +91,7 @@ func LoadYAMLFile(filePath string, target interface{}) error {
 }
 
 // SaveYAMLFile saves the given data to the specified file path in YAML format.
-func SaveYAMLFile(filePath string, toSave interface{}, createFile bool) error {
+func SaveYAMLFile(filePath string, toSave any, createFile bool) error {
 	// Check if the directory exists, and create it if necessary
 	dir := filepath.Dir(filePath)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
@@ -172,7 +172,7 @@ func WriteToLogFile(path string, message string) error {
 }
 
 // Decode map into struct
-func DecodeMapToStruct(payload interface{}, target interface{}) error {
+func DecodeMapToStruct(payload any, target any) error {
 	err := mapstructure.Decode(payload, target)
 	if err != nil {
 		return err
