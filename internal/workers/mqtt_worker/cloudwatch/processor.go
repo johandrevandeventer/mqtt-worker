@@ -89,6 +89,8 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 		return MessageInfo, fmt.Errorf("error unmarshalling payload: %w", err)
 	}
 
+	delete(data, "site_name")
+	delete(data, "site_identifier")
 	delete(data, "device_identifier")
 	delete(data, "device_name")
 	delete(data, "timestamp")
