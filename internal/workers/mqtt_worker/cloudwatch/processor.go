@@ -99,19 +99,19 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 	var rawData map[string]any
 	var processedData map[string]any
 
+	logger.Debug(fmt.Sprintf("%s :: %s", device.Controller, device.DeviceType))
+
 	switch deviceTypeLower {
 	// Process Genset devices
 	case DeviceTypePowermeter:
-		logger.Debug(fmt.Sprintf("%s :: %s", device.Controller, device.DeviceType))
-
 		rawData, processedData, err = powermeter.Decoder(data)
 		if err != nil {
-			return MessageInfo, fmt.Errorf("error decoding genset data: %w", err)
+			return MessageInfo, fmt.Errorf("error decoding powermeter data: %w", err)
 		}
-
-		rawData["SerialNo1"] = device.ControllerIdentifier
-		processedData["SerialNo1"] = device.ControllerIdentifier
 	}
+
+	rawData["SerialNo1"] = device.ControllerIdentifier
+	processedData["SerialNo1"] = device.ControllerIdentifier
 
 	deviceStruct := &types.Device{
 		CustomerID:           device.Site.Customer.ID,
