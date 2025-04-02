@@ -36,6 +36,12 @@ func (e *Engine) startWorker() {
 				return
 			}
 
+			deserializedData, err := payload.Deserialize(data)
+			if err != nil {
+				e.logger.Error("Failed to deserialize data", zap.Error(err))
+				continue
+			}
+
 			worker := mqttworker.NewWorker(workersLogger)
 
 			messageInfo, err := worker.RunWorker(data)
@@ -48,6 +54,12 @@ func (e *Engine) startWorker() {
 					errorSplit := strings.Split(err.Error(), "device is ignored: ")
 					deviceID := errorSplit[1]
 					e.logger.Warn("Device is ignored", zap.String("deviceID", deviceID))
+				} else if strings.Contains(err.Error(), "device not found") {
+					errorSplit := strings.Split(err.Error(), "device not found: ")
+					errorSplit = strings.Split(errorSplit[1], " - ")
+					deviceID := errorSplit[0]
+					deviceName := errorSplit[1]
+					e.logger.Warn("Device not found", zap.String("deviceID", deviceID), zap.String("deviceName", deviceName))
 				} else {
 					e.logger.Error("Processing failed", zap.Error(err))
 				}
@@ -98,11 +110,13 @@ func (e *Engine) startWorker() {
 				}
 
 				rp := payload.Payload{
+					ID:               deserializedData.ID,
 					Message:          serializedRawData,
 					MessageTimestamp: rawDataStruct.Timestamp,
 				}
 
 				pp := payload.Payload{
+					ID:               deserializedData.ID,
 					Message:          serializedProcessedData,
 					MessageTimestamp: processedDataStruct.Timestamp,
 				}

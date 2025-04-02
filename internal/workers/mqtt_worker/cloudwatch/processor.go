@@ -55,7 +55,11 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 
 	device, err := workers.GetDevicesByDeviceIdentifier(deviceID)
 	if err != nil {
-		return MessageInfo, fmt.Errorf("error getting devices by device ID: %w", err)
+		if strings.Contains(err.Error(), "record not found") {
+			return MessageInfo, fmt.Errorf("device not found: %s - %s", deviceID, cloudWatchInfo.DeviceName)
+		}
+
+		return MessageInfo, fmt.Errorf("error getting device by device ID - %s: %w", deviceID, err)
 	}
 
 	deviceType := device.DeviceType
@@ -80,6 +84,8 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 	delete(data, "timestamp")
 
 	var devices []types.Device
+	var rawData map[string]any
+	var processedData map[string]any
 
 	switch deviceTypeLower {
 	// Process Genset devices
@@ -93,27 +99,28 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 
 		rawData["SerialNo1"] = device.ControllerIdentifier
 		processedData["SerialNo1"] = device.ControllerIdentifier
-
-		device := &types.Device{
-			CustomerID:           device.Site.Customer.ID,
-			CustomerName:         device.Site.Customer.Name,
-			SiteID:               device.Site.ID,
-			SiteName:             device.Site.Name,
-			Controller:           device.Controller,
-			DeviceType:           device.DeviceType,
-			ControllerIdentifier: device.ControllerIdentifier,
-			DeviceName:           device.DeviceName,
-			DeviceIdentifier:     device.DeviceIdentifier,
-			RawData:              rawData,
-			ProcessedData:        processedData,
-			Timestamp:            timestamp,
-		}
-
-		devices = append(devices, *device)
 	}
 
+	deviceStruct := &types.Device{
+		CustomerID:           device.Site.Customer.ID,
+		CustomerName:         device.Site.Customer.Name,
+		SiteID:               device.Site.ID,
+		SiteName:             device.Site.Name,
+		Controller:           device.Controller,
+		DeviceType:           device.DeviceType,
+		ControllerIdentifier: device.ControllerIdentifier,
+		DeviceName:           device.DeviceName,
+		DeviceIdentifier:     device.DeviceIdentifier,
+		RawData:              rawData,
+		ProcessedData:        processedData,
+		Timestamp:            timestamp,
+	}
+
+	devices = append(devices, *deviceStruct)
+
 	return &types.MessageInfo{
-		Devices: devices,
+		MessageID: msg.ID.String(),
+		Devices:   devices,
 	}, nil
 
 }

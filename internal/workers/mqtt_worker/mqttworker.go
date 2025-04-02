@@ -42,7 +42,7 @@ func (w *Worker) RunWorker(msg []byte) (messageInfo *types.MessageInfo, err erro
 		return messageInfo, fmt.Errorf("failed to deserialize data: %w", err)
 	}
 
-	w.logger.Info("Running worker", zap.String("worker", WorkerTitle), zap.String("topic", p.MqttTopic))
+	w.logger.Info("Running worker", zap.String("worker", WorkerTitle), zap.String("topic", p.MqttTopic), zap.String("id", p.ID.String()))
 
 	trimmedTopic := workers.TrimPrefix(p.MqttTopic, MqttTopicPrefix)
 	w.logger.Debug("Validating customer", zap.String("topic", trimmedTopic))
