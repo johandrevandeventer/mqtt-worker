@@ -8,6 +8,8 @@ import (
 )
 
 type CloudWatch struct {
+	SiteName         string `json:"site_name"`
+	SiteIdentifier   string `json:"site_identifier"`
 	DeviceIdentifier string `json:"device_identifier"`
 	DeviceName       string `json:"device_name"`
 	Timestamp        string `json:"timestamp"`

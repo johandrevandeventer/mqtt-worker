@@ -56,10 +56,11 @@ func (e *Engine) startWorker() {
 					e.logger.Warn("Device is ignored", zap.String("deviceID", deviceID))
 				} else if strings.Contains(err.Error(), "device not found") {
 					errorSplit := strings.Split(err.Error(), "device not found: ")
-					errorSplit = strings.Split(errorSplit[1], " - ")
-					deviceID := errorSplit[0]
+					errorSplit = strings.Split(errorSplit[1], " -> ")
+					siteName := errorSplit[0]
 					deviceName := errorSplit[1]
-					e.logger.Warn("Device not found", zap.String("deviceID", deviceID), zap.String("deviceName", deviceName))
+					deviceID := errorSplit[2]
+					e.logger.Warn("Device not found", zap.String("siteName", siteName), zap.String("deviceName", deviceName), zap.String("deviceID", deviceID))
 				} else {
 					e.logger.Error("Processing failed", zap.Error(err))
 				}

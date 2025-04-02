@@ -24,10 +24,20 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 		return MessageInfo, fmt.Errorf("failed to unmarshal payload: %w", err)
 	}
 
+	var siteName string
+	// var SiteIdentifier string
+	var deviceIdentifier string
+	var deviceName string
+
+	siteName = cloudWatchInfo.SiteName
+	// SiteIdentifier = cloudWatchInfo.SiteIdentifier
+	deviceIdentifier = cloudWatchInfo.DeviceIdentifier
+	deviceName = cloudWatchInfo.DeviceName
+
 	var controllerID string
 	var deviceID string
 
-	controllerID = cloudWatchInfo.DeviceIdentifier
+	controllerID = deviceIdentifier
 
 	logger.Debug("Processing controller", zap.String("controllerID", controllerID))
 
@@ -56,7 +66,7 @@ func Processor(msg payload.Payload, logger *zap.Logger) (MessageInfo *types.Mess
 	device, err := workers.GetDevicesByDeviceIdentifier(deviceID)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			return MessageInfo, fmt.Errorf("device not found: %s - %s", deviceID, cloudWatchInfo.DeviceName)
+			return MessageInfo, fmt.Errorf("device not found: %s -> %s -> %s", siteName, deviceName, deviceID)
 		}
 
 		return MessageInfo, fmt.Errorf("error getting device by device ID - %s: %w", deviceID, err)
