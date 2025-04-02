@@ -24,8 +24,6 @@ type PowerMeterData struct {
 	I4Angle float64 `json:"I4Angle"`
 }
 
-var ratioMap = map[string]float64{}
-
 func Decoder(payload map[string]any) (rawData, processedData map[string]any, err error) {
 	var powerMeterData PowerMeterData
 
